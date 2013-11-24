@@ -1,0 +1,16 @@
+version = "1.0.0"
+description = "Function boundary tracing"
+requires = "ANSITerminal"
+archive(byte) = "fbt_trace.cma"
+archive(byte, plugin) = "fbt_trace.cma"
+archive(native) = "fbt_trace.cmxa"
+archive(native, plugin) = "fbt_trace.cmxs"
+exists_if = "fbt_trace.cma"
+package "syntax" (
+ version = "1.0.0"
+ description = "Syntax extension for function boundary tracing"
+ requires = "camlp4 fbt_trace"
+ archive(syntax, preprocessor) = "pa_fbt_trace.cmo"
+ archive(syntax, toploop) = "pa_fbt_trace.cmo"
+ exists_if = "pa_fbt_trace.cmo"
+)
