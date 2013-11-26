@@ -8,3 +8,5 @@ ocamlfind install fbt_trace META _build/pa_lib/* _build/lib/*
 rm -rf _build
 ocamlbuild -classic-display -tag verbose -use-ocamlfind -pkg fbt_trace,fbt_trace.syntax -syntax camlp4o lib_test/test.native
 ./_build/lib_test/test.native
+FBT_TRACE_MINOR_GC=1 ./_build/lib_test/test.native
+FBT_TRACE_COMPACT_GC=1 ./_build/lib_test/test.native

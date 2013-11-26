@@ -9,7 +9,7 @@ exists_if = "fbt_trace.cma"
 package "syntax" (
  version = "1.0.0"
  description = "Syntax extension for function boundary tracing"
- requires = "camlp4 fbt_trace"
+ requires = "camlp4"
  archive(syntax, preprocessor) = "pa_fbt_trace.cmo"
  archive(syntax, toploop) = "pa_fbt_trace.cmo"
  exists_if = "pa_fbt_trace.cmo"

@@ -45,7 +45,32 @@ let color_for_loc fname =
       Hashtbl.add mod_mappings fname c;
       c
 
-let print fname msg =
+let print_fast fname msg =
   let fcol = color_for_loc fname in
   printf [Foreground fcol] ">>> %s: %s\n%!" fname msg;
   flush stdout
+
+let print_with_gc gcfn fname msg =
+  let fcol = color_for_loc fname in
+  gcfn ();
+  let s = Gc.stat () in
+  printf [Underlined; white] "[%d]" s.Gc.live_words;
+  printf [Foreground fcol] " >>> %s: %s\n%!" fname msg;
+  flush stdout
+
+let print =
+  let do_minor_gc = try Sys.getenv "FBT_TRACE_MINOR_GC" <> "0" with Not_found -> false in
+  let do_compact  = try Sys.getenv "FBT_TRACE_COMPACT_GC" <> "0" with Not_found -> false in
+  match do_minor_gc, do_compact with
+  | _, true ->
+      print_endline "[fbt] FBT_TRACE_COMPACT_GC is active.";
+      print_with_gc Gc.compact
+  | true, false ->
+      print_endline "[fbt] FBT_TRACE_MINOR_GC is active.";
+      print_with_gc Gc.minor
+  | false, false ->
+      print_endline "[fbt] Function boundary tracing is active.";
+      print_endline "[fbt] To show GC stats, set these environment variables and restart:";
+      print_endline "[fbt]  FBT_TRACE_MINOR_GC to run a minor collection and show live words.";
+      print_endline "[fbt]  FBT_TRACE_COMPACT_GC to run a full compaction and show live words.";
+      print_fast
