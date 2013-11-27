@@ -36,6 +36,14 @@ let new_color () =
   mod_pos := (!mod_pos + 1) mod (Array.length mod_colors);
   mod_colors.(!mod_pos)
 
+let want_backtrace = 
+  try Unix.getenv "FBT_TRACE_SHOW_BACKTRACE" <> "0" with Not_found -> false
+
+let () =
+  if want_backtrace then (
+    print_endline "[fbt] Recording and printing backtraces per function call.";
+    Printexc.record_backtrace true)
+  
 let color_for_loc fname =
   try
     Hashtbl.find mod_mappings fname
@@ -48,6 +56,7 @@ let color_for_loc fname =
 let print_fast fname msg =
   let fcol = color_for_loc fname in
   printf [Foreground fcol] ">>> [pid:%d] %s: %s\n%!" (Unix.getpid()) fname msg;
+  if want_backtrace then Printexc.print_backtrace stdout;
   flush stdout
 
 let print_with_gc gcfn fname msg =
@@ -58,6 +67,7 @@ let print_with_gc gcfn fname msg =
   printf [Underlined; white] "[pid:%d] " (Unix.getpid());
   printf [Underlined; cyan] "[%d]" s.Gc.live_words;
   printf [Foreground fcol] " %s: %s\n%!" fname msg;
+  if want_backtrace then Printexc.print_backtrace stdout;
   flush stdout
 
 let print =
@@ -75,4 +85,5 @@ let print =
       print_endline "[fbt] To show GC stats, set these environment variables and restart:";
       print_endline "[fbt]  FBT_TRACE_MINOR_GC to run a minor collection and show live words.";
       print_endline "[fbt]  FBT_TRACE_COMPACT_GC to run a full compaction and show live words.";
+      print_endline "[fbt]  FBT_TRACE_SHOW_BACKTRACE will display a backtrace for each call.";
       print_fast
