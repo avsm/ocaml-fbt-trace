@@ -10,4 +10,4 @@ test:
 	./build.sh test
 
 clean:
-	./build.sh clean
+	rm -rf _build
