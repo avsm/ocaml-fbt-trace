@@ -32,7 +32,7 @@ open Camlp4.PreCast
 let add_debug_expr name e =
   let _loc = Ast.loc_of_expr e in
   let pos = Loc.start_pos _loc in
-  let l = Lexing.(Printf.sprintf "[%s, line %d, col %d]" pos.pos_fname pos.pos_lnum pos.pos_cnum) in
+  let l = Lexing.(Printf.sprintf "[%s at %d/%d]" pos.pos_fname pos.pos_lnum pos.pos_cnum) in
   <:expr< Fbt_trace.print
           $str:l$
           $str:name$;

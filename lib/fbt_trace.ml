@@ -47,15 +47,17 @@ let color_for_loc fname =
 
 let print_fast fname msg =
   let fcol = color_for_loc fname in
-  printf [Foreground fcol] ">>> %s: %s\n%!" fname msg;
+  printf [Foreground fcol] ">>> [pid:%d] %s: %s\n%!" (Unix.getpid()) fname msg;
   flush stdout
 
 let print_with_gc gcfn fname msg =
   let fcol = color_for_loc fname in
   gcfn ();
   let s = Gc.stat () in
-  printf [Underlined; white] "[%d]" s.Gc.live_words;
-  printf [Foreground fcol] " >>> %s: %s\n%!" fname msg;
+  printf [default] ">>> ";
+  printf [Underlined; white] "[pid:%d] " (Unix.getpid());
+  printf [Underlined; cyan] "[%d]" s.Gc.live_words;
+  printf [Foreground fcol] " %s: %s\n%!" fname msg;
   flush stdout
 
 let print =

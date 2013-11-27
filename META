@@ -1,6 +1,6 @@
 version = "1.0.0"
 description = "Function boundary tracing"
-requires = "ANSITerminal"
+requires = "ANSITerminal unix"
 archive(byte) = "fbt_trace.cma"
 archive(byte, plugin) = "fbt_trace.cma"
 archive(native) = "fbt_trace.cmxa"
